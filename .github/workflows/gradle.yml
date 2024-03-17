@@ -21,7 +21,10 @@ jobs:
         distribution: 'temurin'
         
     - name: Open directory
-      run: cd ./CandyCrushIntelliJProject
+      run: |
+        cd ./CandyCrushIntelliJProject
+        ls -la
+      
 
 
     - name: Test with Gradle Wrapper
