@@ -10,12 +10,12 @@
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
    <children>
-      <Label fx:id="score" prefHeight="84.0" prefWidth="224.0" text="Score: ">
+      <Label fx:id="score" prefHeight="84.0" prefWidth="224.0" text="Score: 0">
          <font>
             <Font size="43.0" />
          </font>
       </Label>
-      <Label fx:id="testLabel" prefHeight="43.0" prefWidth="111.0" text="Label" />
+      <Button mnemonicParsing="false" onMouseClicked="#resetButtonClick" prefHeight="50.0" prefWidth="100.0" text="reset" />
       <Button mnemonicParsing="false" onMouseClicked="#BackButtonClick" prefHeight="50.0" prefWidth="100.0" text="Back" />
       <GridPane fx:id="gameGrid" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: lightblue;">
         <columnConstraints>

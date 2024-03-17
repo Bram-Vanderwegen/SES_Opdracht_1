@@ -29,7 +29,7 @@ public class CheckNeighboursInGrid {
             //middle
             arrayToCheck.add(indexToCheck - width);
             //right
-            if(indexToCheck % width != 3){
+            if(indexToCheck % width != 4){
                 arrayToCheck.add(indexToCheck - width + 1);
             }
         }
@@ -38,7 +38,7 @@ public class CheckNeighboursInGrid {
             arrayToCheck.add(indexToCheck - 1);
         }
         //right
-        if(indexToCheck % width != 3){
+        if(indexToCheck % width != 4){
             arrayToCheck.add(indexToCheck + 1);
         }
         //down
@@ -50,7 +50,7 @@ public class CheckNeighboursInGrid {
             //middle
             arrayToCheck.add(indexToCheck + width);
             //right
-            if(indexToCheck % width != 3){
+            if(indexToCheck % width != 4){
                 arrayToCheck.add(indexToCheck + width + 1);
             }
         }

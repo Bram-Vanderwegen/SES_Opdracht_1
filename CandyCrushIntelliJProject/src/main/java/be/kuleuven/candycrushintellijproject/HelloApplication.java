@@ -31,7 +31,7 @@ public class HelloApplication extends Application {
 
         stage.setTitle("Candy Crush login");
         stage.setScene(loginScene);
-        G_Control.generateCandy();
+        G_Control.generateButtons();
         stage.show();
     }
 

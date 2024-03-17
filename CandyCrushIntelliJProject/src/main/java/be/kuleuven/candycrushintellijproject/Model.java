@@ -22,10 +22,21 @@ public class Model {
     //constructor
     public Model(){
         for (int i = 0; i < 25; i++){
-            candyValues.add(rand.nextInt(5));
+            this.candyValues.add(rand.nextInt(5));
+        }
+        //if there are no possible moves then regenerate until there are
+        while (!checkPotentialMoves()){
+            generateRandomCandy();
+        }
+
+    }
+    public void generateRandomCandy(){
+        for (int i = 0; i < 25; i++){
+            this.candyValues.set(i, rand.nextInt(5));
         }
     }
     //setter and getters for stage/scene//
+
     public void setGameStage(Stage gameStage){
         this.gameStage = gameStage;
     }
@@ -45,13 +56,17 @@ public class Model {
         return this.gameScene;
     }
     public void setUserName(String name){
-        this.userName = name;
+        if(name.equals("")) {
+            this.userName = "Guest";
+        } else {
+            this.userName = name;
+        }
     }
     public String getUserName(){
         return this.userName;
     }
     public void addButton(Button toAdd){
-        buttons.add(toAdd);
+        this.buttons.add(toAdd);
     }
     public Button getButton(int position){
         return buttons.get(position);
@@ -61,6 +76,9 @@ public class Model {
     }
     public int getScore(){
         return score;
+    }
+    public void setCandyValues(ArrayList<Integer> candyList){
+        this.candyValues = candyList;
     }
     //method change stage attributes//
     public void setStageLogin(){
@@ -72,8 +90,10 @@ public class Model {
     public void setTitle(String title){
         gameStage.setTitle(title);
     }
-    //methods for neighbourchecking
-    public void checkAndUpdate(int position){
+    public ArrayList<Integer> getCandyValues(){
+        return this.candyValues;
+    }
+    public void clickCandyAndUpdate(int position){
         //check
         Iterable<Integer> complientNeighboursIterable = NeighbourChecker.getSameNeighboursIds(candyValues, 5, 5, position);
         //convert iterable to arraylist
@@ -81,15 +101,41 @@ public class Model {
         for (Integer item : complientNeighboursIterable) {
             complientNeighbours.add(item);
         }
-        //calculate size and add to score
-        score += complientNeighbours.size();
         //reset values in occupied areas
-        if(complientNeighbours.size() >= 3){
-            candyValues.set(position, rand.nextInt());
+        if(complientNeighbours.size() >= 2){
+            //increase score
+            this.score += complientNeighbours.size() + 1;
+            //reset candys
+            reGenCandy(position);
             for (Integer item : complientNeighboursIterable) {
-                candyValues.set(item, rand.nextInt());
+                reGenCandy(item);
             }
         }
-
+        //if there are no possible moves then regenerate until there are
+        while (!checkPotentialMoves()){
+            generateRandomCandy();
+        }
+    }
+    public boolean checkPotentialMoves(){
+        for(int i = 0; i < 25; i++){
+            Iterable<Integer> complientNeighboursIterable = NeighbourChecker.getSameNeighboursIds(candyValues, 5, 5, i);
+            //convert iterable to arraylist
+            ArrayList<Integer> complientNeighbours = new ArrayList<>();
+            for (Integer item : complientNeighboursIterable) {
+                complientNeighbours.add(item);
+            }
+            if(complientNeighbours.size() > 2){
+                return true;
+            }
+        }
+        return false;
+    }
+    private void reGenCandy(int pos){
+        int oldVal = this.getCandy(pos);
+        int newVal;
+        do {
+            newVal = rand.nextInt(5);
+        }while (oldVal==newVal);
+        this.candyValues.set(pos, newVal);
     }
 }
