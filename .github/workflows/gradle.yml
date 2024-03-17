@@ -19,6 +19,9 @@ jobs:
       with:
         java-version: '21'
         distribution: 'temurin'
+        
+    - name: Open directory
+      run: cd ./CandyCrushIntelliJProject
 
 
     - name: Test with Gradle Wrapper
