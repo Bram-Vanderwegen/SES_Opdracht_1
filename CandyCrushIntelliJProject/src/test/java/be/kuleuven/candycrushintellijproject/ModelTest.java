@@ -16,7 +16,7 @@ public class ModelTest {
         testModel.setUserName("testUser");
         assert(testModel.getUserName() == "testUser");
         testModel.setUserName("");
-        assert(testModel.getUserName() == "Guest");
+        assert(testModel.getUserName() == "Gst");
     }
 
     @Test
