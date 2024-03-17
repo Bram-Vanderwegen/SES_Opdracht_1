@@ -21,9 +21,6 @@ jobs:
         distribution: 'temurin'
 
 
-    - name: Grant executive permission for gradlew
-      run: chmod +x gradlew
-
     - name: Test with Gradle Wrapper
       run: ./gradlew test
 
