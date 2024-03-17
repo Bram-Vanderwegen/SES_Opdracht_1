@@ -27,5 +27,6 @@ jobs:
       run: |
         cd ./CandyCrushIntelliJProject
         ls -la
+        chmod +x gradlew
         ./gradlew test
 
