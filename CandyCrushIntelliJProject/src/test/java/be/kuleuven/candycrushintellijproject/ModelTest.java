@@ -10,10 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ModelTest {
-    @BeforeAll
-    public static void startFX(){
-        Platform.startup(() -> {});
-    }
     @Test
     public void givenUsername_ifRequested_returnUsername(){
         Model testModel = new Model();
@@ -55,13 +51,6 @@ public class ModelTest {
         testModel.clickCandyAndUpdate(24);
         int a  = 0;
         assert(testModel.getScore() == 7);
-    }
-    @Test
-    public void addButton_requestButton_receiveButton(){
-        Model testModel = new Model();
-        Button testButton = new Button("0");
-        testModel.addButton(testButton);
-        assert(testModel.getButton(0) == testButton);
     }
     @Test
     public void generateCandy_requestSize_checkSize() {
