@@ -20,13 +20,12 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         
-    - name: Open directory
-      run: |
-        cd ./CandyCrushIntelliJProject
-        ls -la
       
 
 
-    - name: Test with Gradle Wrapper
-      run: gradlew test
+    - name: Open directory & Test with Gradle Wrapper
+      run: |
+        cd ./CandyCrushIntelliJProject
+        ls -la
+        ./gradlew test
 
