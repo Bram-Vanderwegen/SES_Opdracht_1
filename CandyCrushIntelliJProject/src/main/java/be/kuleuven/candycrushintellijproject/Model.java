@@ -9,7 +9,7 @@ import java.util.Random;
 
 
 public class Model {
-    private ArrayList<recordExercises.Candy> candyValues = new ArrayList<>();
+    private genericBoard<recordExercises.Candy> candyContainer;
     private ArrayList<Shape> shapes = new ArrayList<>();
     private Stage gameStage;
     private Scene loginScene;
@@ -22,8 +22,9 @@ public class Model {
 
     //constructor
     public Model(){
+        candyContainer = new genericBoard<recordExercises.Candy>(board);
         for (int i = 0; i < 25; i++){
-            this.candyValues.add(generateRandomCandy());
+            this.candyContainer.buildCell(generateRandomCandy());
         }
         //if there are no possible moves then regenerate until there are
         while (!checkPotentialMoves()){
@@ -33,7 +34,7 @@ public class Model {
     }
     public void regenerateCandys(){
         for (int i = 0; i < 25; i++){
-            this.candyValues.set(i, generateRandomCandy());
+            this.candyContainer.replaceCellAt(recordExercises.fromIndex(i, this.board), generateRandomCandy());
         }
     }
     public recordExercises.Candy generateRandomCandy(){
@@ -88,13 +89,15 @@ public class Model {
         shapes.set(position, shape);
     }
     public recordExercises.Candy getCandy(recordExercises.Position position){
-        return candyValues.get(position.toIndex());
+        return candyContainer.getCellAt(position);
     }
     public int getScore(){
         return score;
     }
     public void setCandyValues(ArrayList<recordExercises.Candy> candyList){
-        this.candyValues = candyList;
+        for(int i = 0; i < board.boardLength(); i++){
+            candyContainer.replaceCellAt(recordExercises.fromIndex(i, board), candyList.get(i));
+        }
     }
     //method change stage attributes//
     public void setStageLogin(){
@@ -107,11 +110,15 @@ public class Model {
         gameStage.setTitle(title);
     }
     public ArrayList<recordExercises.Candy> getCandyValues(){
-        return this.candyValues;
+        ArrayList<recordExercises.Candy> toReturn = new ArrayList<>();
+        for(int i = 0; i < candyContainer.getBoardCopy().boardLength(); i++){
+            toReturn.add(candyContainer.getCellAt(recordExercises.fromIndex(i, board)));
+        }
+        return toReturn;
     }
     public void clickCandyAndUpdate(recordExercises.Position position){
         //check
-        Iterable<recordExercises.Position> complientNeighboursIterable = CheckNeighboursInGrid.getSameNeighboursPositions(candyValues, board, position);
+        Iterable<recordExercises.Position> complientNeighboursIterable = CheckNeighboursInGrid.getSameNeighboursPositions(getCandyValues(), board, position);
         //convert iterable to arraylist
         ArrayList<recordExercises.Position> compliantNeighbours = new ArrayList<>();
         for (recordExercises.Position item : complientNeighboursIterable) {
@@ -134,7 +141,7 @@ public class Model {
     }
     public boolean checkPotentialMoves(){
         for(int i = 0; i < 25; i++){
-            Iterable<recordExercises.Position> complientNeighboursIterable = NeighbourChecker.getSameNeighboursPositions(candyValues, board, recordExercises.fromIndex(i, board));
+            Iterable<recordExercises.Position> complientNeighboursIterable = NeighbourChecker.getSameNeighboursPositions(getCandyValues(), board, recordExercises.fromIndex(i, board));
             //convert iterable to arraylist
             ArrayList<recordExercises.Position> complientNeighbours = new ArrayList<>();
             for (recordExercises.Position item : complientNeighboursIterable) {
@@ -152,6 +159,6 @@ public class Model {
         do {
             newVal = generateRandomCandy();
         }while (oldVal==newVal);
-        this.candyValues.set(pos.toIndex(), newVal);
+        this.candyContainer.replaceCellAt(pos, newVal);
     }
 }

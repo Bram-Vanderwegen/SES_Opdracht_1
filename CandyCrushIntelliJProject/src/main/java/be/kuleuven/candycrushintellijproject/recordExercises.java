@@ -15,6 +15,9 @@ public class recordExercises {
             }
             return poss;
         }
+        public int boardLength(){
+            return (this.row + 1) * (this.column + 1);
+        }
     }
 
     public record Position(int row, int column, Boardsize size){

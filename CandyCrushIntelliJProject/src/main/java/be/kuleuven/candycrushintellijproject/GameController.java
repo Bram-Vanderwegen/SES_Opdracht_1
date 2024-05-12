@@ -77,7 +77,7 @@ public class GameController {
 
     public void clickCandy(int row, int column) {
         gameModel.clickCandyAndUpdate(new recordExercises.Position(row, column, board));
-        score.setText("Score: " + getScore());
+        score.setText("Score: " + gameModel.getScore());
         updateCandy();
     }
     public void updateCandy(){
