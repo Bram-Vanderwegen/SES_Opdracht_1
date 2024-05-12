@@ -1,7 +1,7 @@
 package be.kuleuven.candycrushintellijproject;
 
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -9,12 +9,13 @@ import java.util.Random;
 
 
 public class Model {
-    private ArrayList<Integer> candyValues = new ArrayList<>();
-    private ArrayList<Button> buttons = new ArrayList<>();
+    private ArrayList<recordExercises.Candy> candyValues = new ArrayList<>();
+    private ArrayList<Shape> shapes = new ArrayList<>();
     private Stage gameStage;
     private Scene loginScene;
     private Scene gameScene;
     private String userName;
+    private recordExercises.Boardsize board = new recordExercises.Boardsize(4, 4);
     private CheckNeighboursInGrid NeighbourChecker = new CheckNeighboursInGrid();
     private int score = 0;
     private Random rand = new Random();
@@ -22,17 +23,32 @@ public class Model {
     //constructor
     public Model(){
         for (int i = 0; i < 25; i++){
-            this.candyValues.add(rand.nextInt(5));
+            this.candyValues.add(generateRandomCandy());
         }
         //if there are no possible moves then regenerate until there are
         while (!checkPotentialMoves()){
-            generateRandomCandy();
+            regenerateCandys();
         }
 
     }
-    public void generateRandomCandy(){
+    public void regenerateCandys(){
         for (int i = 0; i < 25; i++){
-            this.candyValues.set(i, rand.nextInt(5));
+            this.candyValues.set(i, generateRandomCandy());
+        }
+    }
+    public recordExercises.Candy generateRandomCandy(){
+        int index = rand.nextInt(8);
+        switch (index){
+            case 0:
+                return (new recordExercises.BlizzardBoom());
+            case 1:
+                return (new recordExercises.FireYeeter());
+            case 2:
+                return (new recordExercises.SnowflakeExplosion());
+            case 3:
+                return (new recordExercises.PlantMucus());
+            default:
+                return (new recordExercises.NormalCandy(index%4));
         }
     }
     //setter and getters for stage/scene//
@@ -65,19 +81,19 @@ public class Model {
     public String getUserName(){
         return this.userName;
     }
-    public void addButton(Button toAdd){
-        this.buttons.add(toAdd);
+    public void addShape(Shape toAdd){
+        this.shapes.add(toAdd);
     }
-    public Button getButton(int position){
-        return buttons.get(position);
+    public void setShape(int position, Shape shape){
+        shapes.set(position, shape);
     }
-    public int getCandy(int position){
-        return candyValues.get(position);
+    public recordExercises.Candy getCandy(recordExercises.Position position){
+        return candyValues.get(position.toIndex());
     }
     public int getScore(){
         return score;
     }
-    public void setCandyValues(ArrayList<Integer> candyList){
+    public void setCandyValues(ArrayList<recordExercises.Candy> candyList){
         this.candyValues = candyList;
     }
     //method change stage attributes//
@@ -90,38 +106,38 @@ public class Model {
     public void setTitle(String title){
         gameStage.setTitle(title);
     }
-    public ArrayList<Integer> getCandyValues(){
+    public ArrayList<recordExercises.Candy> getCandyValues(){
         return this.candyValues;
     }
-    public void clickCandyAndUpdate(int position){
+    public void clickCandyAndUpdate(recordExercises.Position position){
         //check
-        Iterable<Integer> complientNeighboursIterable = NeighbourChecker.getSameNeighboursIds(candyValues, 5, 5, position);
+        Iterable<recordExercises.Position> complientNeighboursIterable = CheckNeighboursInGrid.getSameNeighboursPositions(candyValues, board, position);
         //convert iterable to arraylist
-        ArrayList<Integer> complientNeighbours = new ArrayList<>();
-        for (Integer item : complientNeighboursIterable) {
-            complientNeighbours.add(item);
+        ArrayList<recordExercises.Position> compliantNeighbours = new ArrayList<>();
+        for (recordExercises.Position item : complientNeighboursIterable) {
+            compliantNeighbours.add(item);
         }
         //reset values in occupied areas
-        if(complientNeighbours.size() >= 2){
+        if(compliantNeighbours.size() >= 2){
             //increase score
-            this.score += complientNeighbours.size() + 1;
+            this.score += compliantNeighbours.size() + 1;
             //reset candys
             reGenCandy(position);
-            for (Integer item : complientNeighboursIterable) {
+            for (recordExercises.Position item : complientNeighboursIterable) {
                 reGenCandy(item);
             }
         }
         //if there are no possible moves then regenerate until there are
         while (!checkPotentialMoves()){
-            generateRandomCandy();
+            regenerateCandys();
         }
     }
     public boolean checkPotentialMoves(){
         for(int i = 0; i < 25; i++){
-            Iterable<Integer> complientNeighboursIterable = NeighbourChecker.getSameNeighboursIds(candyValues, 5, 5, i);
+            Iterable<recordExercises.Position> complientNeighboursIterable = NeighbourChecker.getSameNeighboursPositions(candyValues, board, recordExercises.fromIndex(i, board));
             //convert iterable to arraylist
-            ArrayList<Integer> complientNeighbours = new ArrayList<>();
-            for (Integer item : complientNeighboursIterable) {
+            ArrayList<recordExercises.Position> complientNeighbours = new ArrayList<>();
+            for (recordExercises.Position item : complientNeighboursIterable) {
                 complientNeighbours.add(item);
             }
             if(complientNeighbours.size() > 2){
@@ -130,12 +146,12 @@ public class Model {
         }
         return false;
     }
-    private void reGenCandy(int pos){
-        int oldVal = this.getCandy(pos);
-        int newVal;
+    private void reGenCandy(recordExercises.Position pos){
+        recordExercises.Candy oldVal = this.getCandy(pos);
+        recordExercises.Candy newVal;
         do {
-            newVal = rand.nextInt(5);
+            newVal = generateRandomCandy();
         }while (oldVal==newVal);
-        this.candyValues.set(pos, newVal);
+        this.candyValues.set(pos.toIndex(), newVal);
     }
 }

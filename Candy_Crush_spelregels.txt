@@ -16,9 +16,9 @@ Het doel van Candy Crush is om zoveel mogelijk punten te behalen door het matche
 3. Speciale snoepjes: 
 - Het spel kan speciale snoepjes bevatten die extra krachten hebben wanneer ze worden gematcht: 
 *** BlizzardBoom: Wanneer je een rij van minstens 3 snoepjes maakt, wordt ook de volledige onderste rij verwijderd.  
-*** BlizzardBoom: Wanneer je een rij van minstens 3 snoepjes maakt, worden ook alle andere snoepje die aan de rij grenzen verwijderd. 
+*** FireYeeter: Wanneer je een rij van minstens 3 snoepjes maakt, worden ook alle andere snoepje die aan de rij grenzen verwijderd. 
 *** SnowflakeExplosion: Deze snoepjes zijn dubbele punten waard. 
-*** SnowflakeExplosion: Wanneer je een rij van minstens 3 snoepjes maakt, krijg je 3 extra zetten. 
+*** PlantMucus: Wanneer je een rij van minstens 3 snoepjes maakt, krijg je 3 extra zetten. 
  
 4. Puntentelling en einde spel: 
 - Elke snoepje in een verwijderde rij levert evenveel punten op als het aantal snoepjes dat verwijderd worden. 

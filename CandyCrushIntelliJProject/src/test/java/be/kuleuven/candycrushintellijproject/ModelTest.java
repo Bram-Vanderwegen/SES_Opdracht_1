@@ -1,9 +1,6 @@
 package be.kuleuven.candycrushintellijproject;
 
-import javafx.application.Platform;
-import javafx.scene.control.Button;
-import javafx.stage.Stage;
-import org.junit.jupiter.api.BeforeAll;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

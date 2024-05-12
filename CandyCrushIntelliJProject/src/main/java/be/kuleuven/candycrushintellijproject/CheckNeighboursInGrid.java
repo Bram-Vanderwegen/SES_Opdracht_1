@@ -1,5 +1,7 @@
 package be.kuleuven.candycrushintellijproject;
 
+import javafx.geometry.Pos;
+
 import java.util.Vector;
 
 public class CheckNeighboursInGrid {
@@ -58,6 +60,58 @@ public class CheckNeighboursInGrid {
         int indexValue = gridVector.get(indexToCheck);
         for(Integer item : arrayToCheck){
             if(gridVector.get(item) == indexValue){
+                result.add(item);
+            }
+        }
+        return result;
+    }
+    public static Iterable<recordExercises.Position> getSameNeighboursPositions(Iterable<recordExercises.Candy> grid, recordExercises.Boardsize board, recordExercises.Position pos){
+        Vector<recordExercises.Position> arrayToCheck = new Vector<>(0);
+        Vector<recordExercises.Position> result = new Vector<>(0);
+        Vector<recordExercises.Candy> gridVector = new Vector<>();
+        for (recordExercises.Candy item : grid) {
+            gridVector.add(item);
+        }
+        //start checks
+        //get eligible positions
+        //above
+        if(pos.row() > 0){
+            //left
+            if(pos.column() > 0){
+                arrayToCheck.add(new recordExercises.Position(pos.row() - 1, pos.column() - 1, board));
+            }
+            //middle
+            arrayToCheck.add(new recordExercises.Position(pos.row() - 1, pos.column(), board));
+            //right
+            if(pos.column() < board.column()){
+                arrayToCheck.add(new recordExercises.Position(pos.row() - 1, pos.column() + 1, board));
+            }
+        }
+        //left
+        if(pos.column() > 0){
+            arrayToCheck.add(new recordExercises.Position(pos.row(), pos.column() - 1, board));
+        }
+        //right
+        if(pos.column() < board.column()){
+            arrayToCheck.add(new recordExercises.Position(pos.row(), pos.column() + 1, board));
+        }
+        //down
+        if(pos.row() < board.row()){
+            //left
+            if(pos.column() > 0){
+                arrayToCheck.add(new recordExercises.Position(pos.row() + 1, pos.column() - 1, board));
+            }
+            //middle
+            arrayToCheck.add(new recordExercises.Position(pos.row() + 1, pos.column(), board));
+            //right
+            if(pos.column() < board.column()){
+                arrayToCheck.add(new recordExercises.Position(pos.row() + 1, pos.column() + 1, board));
+            }
+        }
+        //check for same value
+        recordExercises.Candy indexCandy = gridVector.get(pos.toIndex());
+        for(recordExercises.Position item : arrayToCheck){
+            if(gridVector.get(item.toIndex()).equals(indexCandy) || !(gridVector.get(item.toIndex()) instanceof recordExercises.NormalCandy)){
                 result.add(item);
             }
         }
