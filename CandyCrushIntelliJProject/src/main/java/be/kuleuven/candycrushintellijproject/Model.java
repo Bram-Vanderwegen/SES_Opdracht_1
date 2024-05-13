@@ -24,7 +24,7 @@ public class Model {
     public Model(){
         candyContainer = new genericBoard<recordExercises.Candy>(board);
         for (int i = 0; i < 25; i++){
-            this.candyContainer.buildCell(generateRandomCandy());
+            this.candyContainer.replaceCellAt(recordExercises.fromIndex(i, board), generateRandomCandy());
         }
         //if there are no possible moves then regenerate until there are
         while (!checkPotentialMoves()){
