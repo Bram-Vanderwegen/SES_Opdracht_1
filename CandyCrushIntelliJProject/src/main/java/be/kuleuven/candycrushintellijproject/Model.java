@@ -174,15 +174,15 @@ public class Model {
     }
     public Set<List<recordExercises.Position>> findAllMatches(){
         Stream<recordExercises.Position> hor = horizontalStartingPositions();
-        List<List<recordExercises.Position>> Matches = new ArrayList<>(hor
+        List<List<recordExercises.Position>> Matches = hor
                 .map(this::longestMatchToRight)
                 .filter(i -> i.size() > 2)
-                .toList());
+                .collect(Collectors.toList());
         Stream<recordExercises.Position> ver = verticalStartingPositions();
         Matches.addAll(ver
                 .map(this::longestMatchDown)
                 .filter(i -> i.size() > 2)
-                .toList());
+                .collect(Collectors.toList()));
 
         return new HashSet<>(Matches);
     }
@@ -227,13 +227,57 @@ public class Model {
         Stream<recordExercises.Position> path = pos.walkRight();
         return path
                 .takeWhile(c -> (this.candyContainer.getCellAt(c)).equals(this.candyContainer.getCellAt(pos)))
-                .toList();
+                .collect(Collectors.toList());
     }
     public List<recordExercises.Position> longestMatchDown(recordExercises.Position pos){
         Stream<recordExercises.Position> path = pos.walkDown();
         return path
                 .takeWhile(c -> (this.candyContainer.getCellAt(c)).equals(this.candyContainer.getCellAt(pos)))
-                .toList();
+                .collect(Collectors.toList());
     }
-
+    public void clearMatch(List<recordExercises.Position> match){
+        candyContainer.replaceCellAt(match.getFirst(), null);
+        match.removeFirst();
+        if(!match.isEmpty()){
+            this.clearMatch(match);
+        }
+    }
+    public void fallDownTo(recordExercises.Position pos){
+        // if not on top
+        if(pos.row() > 0){
+            recordExercises.Position above = new recordExercises.Position(pos.row() - 1, pos.column(), board);
+            //if void block
+            if (this.candyContainer.getCellAt(pos) == null){
+                // let candy above "fall"
+                //copy candy
+                this.candyContainer.replaceCellAt(pos, this.candyContainer.getCellAt(above));
+                //delete previous
+                this.candyContainer.replaceCellAt(above,null);
+            }
+            //check the one above
+            this.fallDownTo(above);
+        }
+    }
+    public boolean updateBoard(){
+        //flag for return
+        boolean matchFlag;
+        //get the matches
+        Set<List<recordExercises.Position>> Matches = findAllMatches();
+        //check if a match occured
+        matchFlag = Matches.size() > 1;
+        //if a match occured
+        if (matchFlag){
+            //clear matches
+            while (Matches.iterator().hasNext()){
+                clearMatch(Matches.iterator().next());
+            }
+            //let every column fall down
+            for (int i = 0; i <= board.column(); i++){
+                fallDownTo(new recordExercises.Position(board.row(), i, board));
+            }
+            //update again
+            updateBoard();
+        }
+        return matchFlag;
+    }
 }

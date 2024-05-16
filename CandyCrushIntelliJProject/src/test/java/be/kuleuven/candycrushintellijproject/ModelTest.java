@@ -159,8 +159,32 @@ public class ModelTest {
                 new recordExercises.Position(2, 1, board),
                 new recordExercises.Position(3, 2, board)
         );
-        Stream<List<recordExercises.Position>> compareStream = Stream.of(res0, res1, res2, res3);
-        Set<List<recordExercises.Position>> compareSet = new HashSet<>(compareStream.toList());
+        List<List<recordExercises.Position>> compareList = Arrays.asList(res0, res1, res2, res3);
+        Set<List<recordExercises.Position>> compareSet = new HashSet<>(compareList);
         assert(true);
+    }
+    @Test
+    public void GenerateModel_clearMatches_clearedMatch(){
+        Model testModel = new Model();
+        recordExercises.Boardsize board = new recordExercises.Boardsize(4, 4);
+        testModel.setAllCandys(new recordExercises.FireYeeter());
+        //generate cross to remove all matches
+        testModel.setCandy(new recordExercises.Position(0, 2, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(1, 2, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(2, 0, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(2, 1, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(2, 3, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(2, 4, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(3, 2, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(4, 2, board), new recordExercises.SnowflakeExplosion());
+        //add horizontal row of 3 at (1,0)
+        testModel.setCandy(new recordExercises.Position(1, 2, board), new recordExercises.FireYeeter());
+        testModel.setCandy(new recordExercises.Position(1, 3, board), new recordExercises.SnowflakeExplosion());
+        testModel.clearMatch(testModel.findAllMatches().iterator().next());
+        int a = 0;
+        assert(
+                testModel.getCandy(new recordExercises.Position(1, 0, board)) == null &&
+                testModel.getCandy(new recordExercises.Position(1, 1, board)) == null &&
+                testModel.getCandy(new recordExercises.Position(1, 2, board)) == null);
     }
 }
