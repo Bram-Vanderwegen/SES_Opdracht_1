@@ -4,8 +4,10 @@ import javafx.scene.Scene;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class Model {
@@ -52,6 +54,12 @@ public class Model {
                 return (new recordExercises.NormalCandy(index%4));
         }
     }
+
+    public void setAllCandys(recordExercises.Candy candy){
+        for(int i = 0; i < board.boardLength(); i++){
+            this.setCandy(recordExercises.fromIndex(i, board), candy);
+        }
+    }
     //setter and getters for stage/scene//
 
     public void setGameStage(Stage gameStage){
@@ -90,6 +98,9 @@ public class Model {
     }
     public recordExercises.Candy getCandy(recordExercises.Position position){
         return candyContainer.getCellAt(position);
+    }
+    public void setCandy(recordExercises.Position pos, recordExercises.Candy candy){
+        candyContainer.replaceCellAt(pos, candy);
     }
     public int getScore(){
         return score;
@@ -161,4 +172,68 @@ public class Model {
         }while (oldVal==newVal);
         this.candyContainer.replaceCellAt(pos, newVal);
     }
+    public Set<List<recordExercises.Position>> findAllMatches(){
+        Stream<recordExercises.Position> hor = horizontalStartingPositions();
+        List<List<recordExercises.Position>> Matches = new ArrayList<>(hor
+                .map(this::longestMatchToRight)
+                .filter(i -> i.size() > 2)
+                .toList());
+        Stream<recordExercises.Position> ver = verticalStartingPositions();
+        Matches.addAll(ver
+                .map(this::longestMatchDown)
+                .filter(i -> i.size() > 2)
+                .toList());
+
+        return new HashSet<>(Matches);
+    }
+    public boolean firstTwoHaveCandy(recordExercises.Candy candy, Stream<recordExercises.Position> positions){
+
+        long count = positions
+                .limit(2)
+                .map(i ->candyContainer.getCellAt(i))
+                .filter(cell -> cell.equals(candy))
+                .count();
+        return count == 2;
+    }
+    public Stream<recordExercises.Position> horizontalStartingPositions(){
+        List<recordExercises.Position> startingPos = new ArrayList<>();
+        //for all rows
+        for(int i = 0; i <= board.row(); i++){
+            //for all columns
+            for(int j = 0; j <= board.column(); j++){
+                if(!this.firstTwoHaveCandy(candyContainer.getCellAt(new recordExercises.Position(i, j, board)),
+                        new recordExercises.Position(i, j, board).walkLeft())){
+                    startingPos.add(new recordExercises.Position(i, j, board));
+                }
+            }
+        }
+        return startingPos.stream();
+    }
+    public Stream<recordExercises.Position> verticalStartingPositions(){
+        List<recordExercises.Position> startingPos = new ArrayList<>();
+        //for all rows
+        for(int i = 0; i <= board.row(); i++){
+            //for all columns
+            for(int j = 0; j <= board.column(); j++){
+                if(!this.firstTwoHaveCandy(candyContainer.getCellAt(new recordExercises.Position(i, j, board)),
+                        new recordExercises.Position(i, j, board).walkUp())){
+                    startingPos.add(new recordExercises.Position(i, j, board));
+                }
+            }
+        }
+        return startingPos.stream();
+    }
+    public List<recordExercises.Position> longestMatchToRight(recordExercises.Position pos){
+        Stream<recordExercises.Position> path = pos.walkRight();
+        return path
+                .takeWhile(c -> (this.candyContainer.getCellAt(c)).equals(this.candyContainer.getCellAt(pos)))
+                .toList();
+    }
+    public List<recordExercises.Position> longestMatchDown(recordExercises.Position pos){
+        Stream<recordExercises.Position> path = pos.walkDown();
+        return path
+                .takeWhile(c -> (this.candyContainer.getCellAt(c)).equals(this.candyContainer.getCellAt(pos)))
+                .toList();
+    }
+
 }

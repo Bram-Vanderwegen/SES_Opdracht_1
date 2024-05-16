@@ -3,6 +3,7 @@ package be.kuleuven.candycrushintellijproject;
 import org.junit.jupiter.api.Test;
 
 import java.util.Vector;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -52,5 +53,37 @@ public class recordtest {
         expectedResult.add(new recordExercises.Position(1, 0, board));
         expectedResult.add(new recordExercises.Position(1, 1, board));
         assert(board.positions().equals(expectedResult));
+    }
+    @Test
+    public void initBoard_walkLeft_getAmountOfSteps(){
+        recordExercises.Boardsize board = new recordExercises.Boardsize(4, 4);
+        recordExercises.Position pos = new recordExercises.Position(4, 4, board);
+        Stream<recordExercises.Position> ballade = pos.walkLeft();
+        int a = (int) ballade.count();
+        assert (a == 5);
+    }
+    @Test
+    public void initBoard_walkRight_getAmountOfSteps(){
+        recordExercises.Boardsize board = new recordExercises.Boardsize(4, 4);
+        recordExercises.Position pos = new recordExercises.Position(0, 0, board);
+        Stream<recordExercises.Position> ballade = pos.walkRight();
+        int a = (int) ballade.count();
+        assert (a == 5);
+    }
+    @Test
+    public void initBoard_walkUp_getAmountOfSteps(){
+        recordExercises.Boardsize board = new recordExercises.Boardsize(4, 4);
+        recordExercises.Position pos = new recordExercises.Position(4, 4, board);
+        Stream<recordExercises.Position> ballade = pos.walkUp();
+        int a = (int) ballade.count();
+        assert (a == 5);
+    }
+    @Test
+    public void initBoard_walkDown_getAmountOfSteps(){
+        recordExercises.Boardsize board = new recordExercises.Boardsize(4, 4);
+        recordExercises.Position pos = new recordExercises.Position(0, 0, board);
+        Stream<recordExercises.Position> ballade = pos.walkDown();
+        int a = (int) ballade.count();
+        assert (a == 5);
     }
 }

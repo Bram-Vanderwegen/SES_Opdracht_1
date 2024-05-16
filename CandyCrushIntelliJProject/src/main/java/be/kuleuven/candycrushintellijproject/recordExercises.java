@@ -1,6 +1,10 @@
 package be.kuleuven.candycrushintellijproject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Vector;
+import java.util.stream.Stream;
 
 public class recordExercises {
     public record Boardsize(int row, int column){
@@ -8,7 +12,7 @@ public class recordExercises {
             if (row < 0 ) throw new IllegalArgumentException("row must be 0 or greater");
             if (column < 0) throw new IllegalArgumentException("column must be 0 or greater");
         }
-        Iterable<Position> positions(){
+        Collection<Position> positions(){
             Vector<Position> poss = new Vector<Position>();
             for (int i = 0; i < (row + 1) * (column + 1); i++) {
                 poss.add(fromIndex(i, this));
@@ -61,6 +65,48 @@ public class recordExercises {
         public boolean isLastColumn(){
             return column == size.column;
         }
+
+        public Stream<Position> walkLeft(){
+            ArrayList<Position> walkList = new ArrayList<>();
+            Position pos = this;
+            while(pos.column > 0){
+                walkList.add(pos);
+                pos = new Position(pos.row, pos.column-1, this.size);
+            }
+            walkList.add(pos);
+            return walkList.stream();
+        }
+        public Stream<Position> walkRight(){
+            ArrayList<Position> walkList = new ArrayList<>();
+            Position pos = this;
+            while(pos.column < size.column){
+                walkList.add(pos);
+                pos = new Position(pos.row, pos.column+1, this.size);
+            }
+            walkList.add(pos);
+            return walkList.stream();
+        }
+        public Stream<Position> walkUp(){
+            ArrayList<Position> walkList = new ArrayList<>();
+            Position pos = this;
+            while(pos.row > 0){
+                walkList.add(pos);
+                pos = new Position(pos.row - 1, pos.column, this.size);
+            }
+            walkList.add(pos);
+            return walkList.stream();
+        }
+        public Stream<Position> walkDown(){
+            ArrayList<Position> walkList = new ArrayList<>();
+            Position pos = this;
+            while(pos.row < size.row){
+                walkList.add(pos);
+                pos = new Position(pos.row + 1, pos.column, this.size);
+            }
+            walkList.add(pos);
+            return walkList.stream();
+        }
+
 
     }
     static public Position fromIndex(int index, Boardsize size){
