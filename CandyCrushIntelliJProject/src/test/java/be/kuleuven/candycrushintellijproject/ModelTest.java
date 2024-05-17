@@ -240,6 +240,7 @@ public class ModelTest {
                         Objects.equals(testModel.getCandy(new recordExercises.Position(0, 2, board)), new recordExercises.emptyCandy()) &&
                         Objects.equals(testModel.getCandy(new recordExercises.Position(1, 2, board)), new recordExercises.emptyCandy()) &&
                         Objects.equals(testModel.getCandy(new recordExercises.Position(0, 3, board)), new recordExercises.emptyCandy()) &&
-                        Objects.equals(testModel.getCandy(new recordExercises.Position(0, 4, board)), new recordExercises.emptyCandy()));
+                        Objects.equals(testModel.getCandy(new recordExercises.Position(0, 4, board)), new recordExercises.emptyCandy()) &&
+                        testModel.getNewScore() == 6);
     }
 }

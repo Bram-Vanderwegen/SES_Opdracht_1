@@ -9,6 +9,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.lang.Math.abs;
+
 
 public class Model {
     private genericBoard<recordExercises.Candy> candyContainer;
@@ -20,7 +22,9 @@ public class Model {
     private recordExercises.Boardsize board = new recordExercises.Boardsize(4, 4);
     private CheckNeighboursInGrid NeighbourChecker = new CheckNeighboursInGrid();
     private int score = 0;
+    private int newScore = 0;
     private Random rand = new Random();
+    private List<recordExercises.candySwitch> switchList = new ArrayList<>();
 
     //constructor
     public Model(){
@@ -61,7 +65,12 @@ public class Model {
         }
     }
     //setter and getters for stage/scene//
-
+    public genericBoard<recordExercises.Candy> getBoard(){
+        return candyContainer;
+    }
+    public List<recordExercises.candySwitch> getSwitchList(){
+        return switchList;
+    }
     public void setGameStage(Stage gameStage){
         this.gameStage = gameStage;
     }
@@ -105,6 +114,7 @@ public class Model {
     public int getScore(){
         return score;
     }
+    public int getNewScore() {return newScore;}
     public void setCandyValues(ArrayList<recordExercises.Candy> candyList){
         for(int i = 0; i < board.boardLength(); i++){
             candyContainer.replaceCellAt(recordExercises.fromIndex(i, board), candyList.get(i));
@@ -242,6 +252,7 @@ public class Model {
     }
     public void clearMatch(List<recordExercises.Position> match){
         candyContainer.replaceCellAt(match.getFirst(), new recordExercises.emptyCandy());
+        newScore++;
         match.removeFirst();
         if(!match.isEmpty()){
             this.clearMatch(match);
@@ -273,9 +284,8 @@ public class Model {
         //if a match occured
         if (matchFlag){
             //clear matches
-            Iterator<List<recordExercises.Position>> iterator = Matches.iterator();
-            while (iterator.hasNext()){
-                clearMatch(iterator.next());
+            for (List<recordExercises.Position> match : Matches) {
+                clearMatch(match);
             }
             //let every column fall down
             for (int i = 0; i <= board.column(); i++){
@@ -285,5 +295,82 @@ public class Model {
             updateBoard();
         }
         return matchFlag;
+    }
+    public boolean matchAfterSwitch(recordExercises.candySwitch sw){
+        //check if switch is legal
+        if((abs(sw.pos1().column() - sw.pos2().column()) + abs(sw.pos1().row() - sw.pos2().row()) != 1)){
+            return false;
+        }
+        //swap candys
+        recordExercises.Candy cap;
+        cap = this.candyContainer.getCellAt(sw.pos1());
+        this.candyContainer.replaceCellAt(sw.pos1(), this.candyContainer.getCellAt(sw.pos2()));
+        this.candyContainer.replaceCellAt(sw.pos2(), cap);
+        if(findAllMatches().isEmpty()){
+            //no bitches
+            return false;
+        } else {
+            return true;
+        }
+    }
+    public void switchItem(recordExercises.candySwitch sw){
+        recordExercises.Candy cap;
+        cap = this.candyContainer.getCellAt(sw.pos1());
+        this.candyContainer.replaceCellAt(sw.pos1(), this.candyContainer.getCellAt(sw.pos2()));
+        this.candyContainer.replaceCellAt(sw.pos2(), cap);
+    }
+    public List<recordExercises.candySwitch> getValidSwitches(){
+        List<recordExercises.candySwitch> switches = new ArrayList<>();
+        //get vertical switches
+        for(int i = 0; i < board.row() - 1; i++){
+            for(int j = 0; j < board.column(); i++){
+                recordExercises.candySwitch switchUnderObservation = new recordExercises.candySwitch(
+                        new recordExercises.Position(i, j, board),
+                        new recordExercises.Position(i + 1, j, board));
+                if (matchAfterSwitch(switchUnderObservation)){
+                    switches.add(switchUnderObservation);
+                }
+            }
+        }
+        //get horizontal switches
+        for(int i = 0; i < board.row(); i++){
+            for(int j = 0; j < board.column() - 1; i++){
+                recordExercises.candySwitch switchUnderObservation = new recordExercises.candySwitch(
+                        new recordExercises.Position(i, j, board),
+                        new recordExercises.Position(i, j + 1, board));
+                if (matchAfterSwitch(switchUnderObservation)){
+                    switches.add(switchUnderObservation);
+                }
+            }
+        }
+        return switches;
+    }
+    public int switchCandys(){
+        //clear all successive matches and increase global score
+        updateBoard();
+        List<recordExercises.candySwitch> switches = getValidSwitches();
+        //get performance variables
+        int max = 0;
+        List<recordExercises.candySwitch> deepList = null;
+        //generate model
+        for(int i = 0; i < switches.size(); i++){
+            //create new model, copy these values, switch two
+            Model instanceModel = new Model();
+            this.candyContainer.copyTo(instanceModel.getBoard());
+            instanceModel.switchItem(switches.get(i));
+            //get score value and get highest
+            int runScore = instanceModel.switchCandys();
+            if(runScore > max){
+                //update new max
+                max = runScore;
+                //get the list the previous instance encountered and prepend this one
+                deepList = instanceModel.getSwitchList();
+                deepList.addFirst(switches.get(i));
+            }
+        }
+
+
+        this.switchList = deepList;
+        return score + max;
     }
 }

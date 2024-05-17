@@ -125,4 +125,6 @@ public class recordExercises {
     record SnowflakeExplosion() implements Candy {}
     record PlantMucus() implements Candy {}
     record emptyCandy() implements Candy {}
+
+    record candySwitch(Position pos1, Position pos2) {}
 }
