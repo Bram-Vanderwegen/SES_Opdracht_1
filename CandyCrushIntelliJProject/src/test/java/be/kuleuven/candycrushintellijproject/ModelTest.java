@@ -187,4 +187,59 @@ public class ModelTest {
                 testModel.getCandy(new recordExercises.Position(1, 1, board)) == null &&
                 testModel.getCandy(new recordExercises.Position(1, 2, board)) == null);
     }
+    @Test
+    public void generateModel_clearMatchAndFallDown_fellDown(){
+        Model testModel = new Model();
+        recordExercises.Boardsize board = new recordExercises.Boardsize(4, 4);
+        testModel.setAllCandys(new recordExercises.FireYeeter());
+        //generate cross to remove all matches
+        testModel.setCandy(new recordExercises.Position(0, 2, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(1, 2, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(2, 0, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(2, 1, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(2, 3, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(2, 4, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(3, 2, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(4, 2, board), new recordExercises.SnowflakeExplosion());
+        //add horizontal row of 3 at (1,0)
+        testModel.setCandy(new recordExercises.Position(1, 2, board), new recordExercises.FireYeeter());
+        testModel.setCandy(new recordExercises.Position(1, 3, board), new recordExercises.SnowflakeExplosion());
+        testModel.clearMatch(testModel.findAllMatches().iterator().next());
+        testModel.fallDownTo(new recordExercises.Position(4, 0, board));
+        testModel.fallDownTo(new recordExercises.Position(4, 1, board));
+        testModel.fallDownTo(new recordExercises.Position(4, 2, board));
+        testModel.fallDownTo(new recordExercises.Position(4, 3, board));
+        testModel.fallDownTo(new recordExercises.Position(4, 4, board));
+        assert(
+                Objects.equals(testModel.getCandy(new recordExercises.Position(0, 0, board)), new recordExercises.emptyCandy()) &&
+                        Objects.equals(testModel.getCandy(new recordExercises.Position(0, 1, board)), new recordExercises.emptyCandy()) &&
+                        Objects.equals(testModel.getCandy(new recordExercises.Position(0, 2, board)), new recordExercises.emptyCandy()));
+    }
+    @Test
+    public void generateModel_changeCandys_updateBoard(){
+        Model testModel = new Model();
+        recordExercises.Boardsize board = new recordExercises.Boardsize(4, 4);
+        testModel.setAllCandys(new recordExercises.FireYeeter());
+        //generate cross to remove all matches
+        testModel.setCandy(new recordExercises.Position(0, 2, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(1, 2, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(2, 0, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(2, 1, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(2, 3, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(2, 4, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(3, 2, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(4, 2, board), new recordExercises.SnowflakeExplosion());
+        //add horizontal row of 3 at (1,0)
+        testModel.setCandy(new recordExercises.Position(1, 2, board), new recordExercises.FireYeeter());
+        testModel.setCandy(new recordExercises.Position(1, 3, board), new recordExercises.SnowflakeExplosion());
+        testModel.setCandy(new recordExercises.Position(1, 4, board), new recordExercises.SnowflakeExplosion());
+        testModel.updateBoard();
+        assert(
+                Objects.equals(testModel.getCandy(new recordExercises.Position(0, 0, board)), new recordExercises.emptyCandy()) &&
+                        Objects.equals(testModel.getCandy(new recordExercises.Position(0, 1, board)), new recordExercises.emptyCandy()) &&
+                        Objects.equals(testModel.getCandy(new recordExercises.Position(0, 2, board)), new recordExercises.emptyCandy()) &&
+                        Objects.equals(testModel.getCandy(new recordExercises.Position(1, 2, board)), new recordExercises.emptyCandy()) &&
+                        Objects.equals(testModel.getCandy(new recordExercises.Position(0, 3, board)), new recordExercises.emptyCandy()) &&
+                        Objects.equals(testModel.getCandy(new recordExercises.Position(0, 4, board)), new recordExercises.emptyCandy()));
+    }
 }

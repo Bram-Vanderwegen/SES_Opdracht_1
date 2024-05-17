@@ -187,10 +187,15 @@ public class Model {
         return new HashSet<>(Matches);
     }
     public boolean firstTwoHaveCandy(recordExercises.Candy candy, Stream<recordExercises.Position> positions){
+        //return if nullcandy because use is illegal
+        if(candy.equals(new recordExercises.emptyCandy())){
+            return true;
+        }
 
         long count = positions
                 .limit(2)
                 .map(i ->candyContainer.getCellAt(i))
+                .filter(Objects::nonNull)
                 .filter(cell -> cell.equals(candy))
                 .count();
         return count == 2;
@@ -236,7 +241,7 @@ public class Model {
                 .collect(Collectors.toList());
     }
     public void clearMatch(List<recordExercises.Position> match){
-        candyContainer.replaceCellAt(match.getFirst(), null);
+        candyContainer.replaceCellAt(match.getFirst(), new recordExercises.emptyCandy());
         match.removeFirst();
         if(!match.isEmpty()){
             this.clearMatch(match);
@@ -247,12 +252,12 @@ public class Model {
         if(pos.row() > 0){
             recordExercises.Position above = new recordExercises.Position(pos.row() - 1, pos.column(), board);
             //if void block
-            if (this.candyContainer.getCellAt(pos) == null){
+            if (Objects.equals(this.candyContainer.getCellAt(pos), new recordExercises.emptyCandy())){
                 // let candy above "fall"
                 //copy candy
                 this.candyContainer.replaceCellAt(pos, this.candyContainer.getCellAt(above));
                 //delete previous
-                this.candyContainer.replaceCellAt(above,null);
+                this.candyContainer.replaceCellAt(above,new recordExercises.emptyCandy());
             }
             //check the one above
             this.fallDownTo(above);
@@ -264,12 +269,13 @@ public class Model {
         //get the matches
         Set<List<recordExercises.Position>> Matches = findAllMatches();
         //check if a match occured
-        matchFlag = Matches.size() > 1;
+        matchFlag = !Matches.isEmpty();
         //if a match occured
         if (matchFlag){
             //clear matches
-            while (Matches.iterator().hasNext()){
-                clearMatch(Matches.iterator().next());
+            Iterator<List<recordExercises.Position>> iterator = Matches.iterator();
+            while (iterator.hasNext()){
+                clearMatch(iterator.next());
             }
             //let every column fall down
             for (int i = 0; i <= board.column(); i++){

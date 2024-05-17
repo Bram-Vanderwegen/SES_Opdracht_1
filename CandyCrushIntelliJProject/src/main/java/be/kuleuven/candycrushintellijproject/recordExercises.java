@@ -114,7 +114,7 @@ public class recordExercises {
         return pos;
     }
 
-    public sealed interface Candy permits NormalCandy, BlizzardBoom, FireYeeter, SnowflakeExplosion, PlantMucus {}
+    public sealed interface Candy permits NormalCandy, BlizzardBoom, FireYeeter, SnowflakeExplosion, PlantMucus, emptyCandy {}
     record NormalCandy(int color) implements Candy {
         public NormalCandy{
             if (color < 0 || color > 3) throw new IllegalArgumentException("color must be within [0;3]");
@@ -124,4 +124,5 @@ public class recordExercises {
     record FireYeeter() implements Candy {}
     record SnowflakeExplosion() implements Candy {}
     record PlantMucus() implements Candy {}
+    record emptyCandy() implements Candy {}
 }
